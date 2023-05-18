@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+  <title>XFVS Security</title> 
+  <link rel="stylesheet" type="text/css" href="./main.css" /> 
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> 
+ </head> 
+ <body> 
+  <div id="app"> 
+   <nav id="te-nav"> 
+    <ul> 
+     <li>
+      <!--动态修改style--> <a class="tag" v-on:click="page = 'Home'" href="#Home">Home</a> </li> 
+     <li> <a class="tag" v-on:click="page = 'OverView'" href="#OverView">Overview</a> </li> 
+     <li> <a class="tag" v-on:click="page = 'Dataset'" href="#Dataset">Dataset</a> </li> 
+     <li> <a class="tag" v-on:click="page = 'Results'" href="#Results">Results</a> </li> 
+     <li> <a class="tag" v-on:click="page = 'Publications'" href="#Publications">Publications</a> </li> 
+    </ul> 
+   </nav> 
+   <div class="container"> 
+    <div class="home" v-if="page == 'Home'"> 
+     <div class="home-main"> 
+      <div class="home-item"> 
+       <h1 class="ti">XFVS Security</h1> 
+      </div> 
+      <div class="home-item"> 
+       <p class="ti sub-ti"> Understand the (in)security of cross-side face
+        verification systems in mobile apps from a system perspective.</p> 
+      </div> 
+      <div class="home-item"> 
+       <h2 id="about">About</h2> 
+       <p> While cross-side face verification systems (XFVS) are widely used in mobile apps, their security properties are not well understood. We conduct the first measurement study on the
+        security of real-world XFVSes used by popular mobile apps
+        from a system perspective. Our paper, Understanding the (In)Security of Cross-side Face Verification Systems in Mobile Apps: A System Perspective is published in IEEE S&P 2023. Here's the trailer of our talk: </p>
+         <video width="800" height="452" controls>
+           <source src="res/XFVS_security-SP23-teaser.mp4" type="video/mp4">
+         </video>
+         
+
+
+       <h2>Features</h2> 
+       
+       <ul>
+         <li>We perform the first comprehensive measurement analysis on the security of cross-side face verification systems (XFVSes) from a system perspective, i.e., understanding the security of the cross-sided two-phase verification procedure. </li>
+         <li>We design a principled method and implement a semi-automated framework named XFVSCHECKER to detect XFVS apps and analyze the security of XFVSes by inspecting how four security properties are satisfied with clear assessment rules. </li>
+         <li> Our evaluation result reveals that real-world XFVSes, including those adopted by WeChat and AliPay, are under significant security threats. We summarize four typical attacks and illustrate them with case studies. We responsibly report the security issues and provide mitigation suggestions to related vendors. </li>
+         <!-- <li>We released our code and dataset at <a href="https://github.com/seclab-fudan/APIGraph">https://github.com/seclab-fudan/APIGraph</a></li> -->
+       </ul>
+       </div> 
+     </div> 
+
+     <!-- <div class="cv"> 
+      <h2>Contact us</h2> 
+      <div id="contact-link"> 
+       <div class="contact-item"> 
+        <h4><a href="https://xhzhang.github.io/" one-link-mark="yes" target="blank">Xiaohan Zhang</a></h4> 
+        <address> <strong>Fudan University</strong><br /> <span class="obfuscate">xh_zhang@fudan.edu.cn</span> </address> 
+       </div> 
+       <div class="contact-item"> 
+        <h4><a href="https://yuanxzhang.github.io/" one-link-mark="yes" target="blank">Yuan Zhang</a></h4> 
+        <address> <strong>Fudan University</strong><br /> <span class="obfuscate">yuanxzhang@fudan.edu.cn</span> </address> 
+       </div> 
+       <div class="contact-item"> 
+        <h4><a href="#">Min Yang</a></h4> 
+        <address> <strong>Fudan University</strong><br /> <span class="obfuscate">m_yang@fudan.edu.cn</span> </address> 
+       </div> 
+      </div> 
+     </div>  -->
+
+
+
+    </div> 
+
+    <div class="overview" v-if="page == 'OverView'"> 
+     <div class="home-main"> 
+      <div class="home-item"> 
+       <h2>Background</h2>
+       <p>Cross-side face verification systems (XFVS) are widely used in mobile apps to verify an individual's claimed identity.
+        Prior works have studied the attacks against XFVSes (and
+        other FVSes) from the perspective of adversarial machine
+        learning (ML), including presentation attacks
+        and adversary attacks. </p>
+        <img src="pictures/xfvs background.png" width="80%"/> 
+        <p>However, despite the previous success in studying the ML-driven attacks against XFVSes and the escalating arms race
+        between defenses and attacks, one largely ignored perspective
+        of XFVS security is the system design. In other words, it
+        <strong>remains unclear</strong> whether the verification protocol adopted by
+        XFVSes is secure due to the involvement of complex cross-side two-phase face verification.</P> 
+        <!-- <P>From the ML perspective,
+        the evasion bar is becoming higher and higher with low attack
+        accuracy due to more advanced countermeasures. However,
+        from the system perspective, the evasion bar is still low
+        because the existence of one logic vulnerability in the two-phase face verification protocol will make all parts vulnerable
+        to adversaries, as indicated by the famous wooden barrel
+        theory.</p> -->
+
+       <h2>FVS classification</h2>
+       <p>
+        To verify a person's identity, A face verification system (FVS) first collects his/her face data (face collection), and then verifies whether the collected face data is matched with the reference face data
+        (face matching). In real-world applications, the two steps of
+        face collection and face matching may occur in different
+        places. Based on the split between face collection and face
+        matching, we classify FVSes into three types: local FVS,
+        remote FVS, and cross-side FVS.
+      </p>
+
+      <img src="pictures/threat model1.png" width="80%"/>      
+      <ul>
+        <li>
+          <p>Type I: Local FVS. A local FVS is designed to collect
+            and match faces within the user’s device. The face data
+            are saved locally and never leave the device.</p>
+        </li>
+        <li>
+          <p>Type II: Remote FVS. A remote FVS is designed to
+            collect and match faces at a location away from the
+            user, such as those used at border gates.
+            </p>
+        </li>
+        <li>
+          <p>Type III: Cross-side FVS. A cross-side FVS (XFVS)
+            collects faces on user-side devices, sends the face data
+            to a trusted server, and performs face matching on the
+            server side. Unlike local and remote FVSes which have
+            to be done on specific devices, currently XFVSes usually
+            allow users to use them from different devices, thus users
+            can remotely <strong>verify their identities at any time and any
+            place.</strong>
+            </p>
+        </li>
+      </ul>
+
+       
+      <h2>Threat Model</h2>
+      <img src="pictures/threat model2.png" width="70%"/> 
+      <p>
+        Our threat model of XFVS security involves two parties: (i)
+        <strong>an untrusted client</strong>, and (ii) <strong>a trusted server</strong>. 
+        <p>First, an XFVS
+        client is untrusted because attackers can use XFVSes on a
+        device under their control, such as a custom ROM, a rooted OS
+        or even a phone with special hardware. More specifically,
+        inscope attacks involve but are not limited to code injection and
+        data tampering, which modify client-side XFVS code and data.</p>
+        <p>Second, an XFVS server is trusted because attackers do not
+        have any control over the server-side code. At the same time,
+        an XFVS server may be vulnerable: For example, a vulnerable
+        server may forget to validate the untrusted data coming from
+        the client. </p>
+      </p>
+
+
+
+
+      <h2>Our Method</h2> 
+      <p>To perform a comprehensive measurement analysis on the security of cross-side face verification systems
+        (XFVSes), we design and implement a semi-automated
+        testing framework, called XFVSCHECKER. It mainly solves two main challenges: </p>
+
+        <ol>
+          <li> How to detect XFVS applications with high accuracy? </li>
+          <li> How to check the security properties of XFVS applications?</li>
+        </ol>
+      <strong>XFVS Detection</strong>
+
+      <p>The key idea of detecting XFVS apps is that the semantics
+        of “face” and “verification” should be closely present in
+        the apps, with clear boundaries from the rest of the code.
+        Therefore, we use a lightweight static analysis method to
+        locate such semantics from app code and privacy policies, As shown in the figure below.</p>
+      
+      <img src="pictures/XFVS detection.png" width="90%" /> 
+
+ 
+      <strong>XFVS  Security Analysis</strong>
+      <p>By considering confidentiality and integrity in and across
+        each step of XFVS's workflow, so that together they can guarantee
+        the security of XFVS, we propose four key security properties: </p>
+        <ul>
+          <li>
+            <p><strong>SP1: Reliable Environment.</strong> Reliable Environment property is to ensure that the code, data and machine learning
+              models at XFVS client are not tampered with by local attackers.</p>
+          </li>
+          <li>
+            <p><strong>SP2: Camera Security.</strong> Camera Security property is to
+              ensure that the face data to verify should come directly from
+              the physical camera lens, instead of an injected data stream.
+              </p>
+          </li>
+          <li>
+            <p><strong>SP3: Reliable Liveness.</strong> Reliable Liveness property is
+              to accurately determine whether the collected face data are
+              being presented by a live person, as opposed to a fake or
+              synthetic face. </p>
+          </li>
+          <li>
+            <p><strong>SP4: Data Consistency.</strong> Data Consistency property is to
+              ensure that XFVS data—including the collected face, the
+              liveness configurations, and the validation results—are consistent between all steps across the client and the server.</p>
+          </li>
+        
+        </ul>
+
+      
+      <img src="pictures/sp check.png" width="60%" />
+      <P>For more detailed explaination, please refer to our paper or join our talk at IEEE S&P 2023.</P> 
+      <!-- <h2>Workflow of APIGraph</h2> 
+      <img src="pictures/pic5.png" width="100%" />  -->
+      
+      
+      </div> 
+     </div> 
+    </div> 
+    <div class="dataset" v-if="page == 'Dataset'"> 
+     <div class="home-main"> 
+      <div class="home-item"> 
+       <h2>Dataset</h2> 
+       <p>
+        We collect 43,422 apps from Google Play and Xiaomi App Market during May 2021, as shown
+in table below. Specifically, we download top free and trending
+apps across all 33 categories from Google Play, and top apps
+from all 16 categories of the Xiaomi App Market. Note that
+all game-related apps are categorized as one “Game” category.
+We also download the privacy policies of these apps from their
+app introduction pages in the market.
+        <img src="pictures/dataset.png" width="70%" /> 
+
+        <h2>Prevalence</h2> 
+        <img src="pictures/prevalence.png" width="60%" /> 
+        
+        <p>XFVSCHECKER finds 2,213 XFVS apps out
+          of 43,422 real-world apps (5.1%) in two markets, indicating that XFVS apps are popular now. Note that XFVS apps are
+          often top apps with large numbers of users, for example, these
+          2,213 XFVS apps have an average of 38M downloads. Another
+          interesting finding is that Xiaomi App Market has more XFVS
+          apps than Google Play (6.9% VS. 0.6%), indicating that
+          XFVSes are more used in China.</p>
+          <h2>Distribution</h2> 
+          
+          <img src="pictures/distribution1.png" width="80%" /> 
+          <p>We study the distribution of XFVS apps
+            across different categories, and the results are shown in figure above.
+            Note that we merge similar categories across app markets
+            and within each market for the convenience of presentation,
+            and we get 13 categories with XFVS apps. We can see that
+            finance, social, and transportation are the top categories, and
+            apps in these categories often contain very sensitive data and
+            operations.</p>
+          
+            
+ 
+        
+
+               
+        
+
+      </div> 
+     </div> 
+    </div> 
+
+    <div class="results & discussion" v-if="page == 'Results'"> 
+     <div class="home-main"> 
+      <div class="home-item" id="down"> 
+        
+
+       <!-- <h2>Scoring Rules</h2>
+       
+       <p>XFVSCHECKER checks how an XFVS app
+        satisfies each security property, from SP1 to SP4, along the
+        XFVS workflow. To ensure objectivity and accuracy
+        in the evaluation process, we rely on automated methods
+        as much as possible, leveraging pre-tailored sandboxes and
+        testing scripts. For any areas where automation is not possible,
+        we conduct manual testing by multiple security experts for
+        result cross-validation. This approach enables us to automate
+        testing for the majority of SP1 and SP2, while largely relying
+        on manual efforts to evaluate SP3 and SP4.</p>
+       
+        <img src="pictures/scoring rules.png" width="75%" />
+        <p>We assign a score from 1 to 6 to each security property. If
+          our security experts conclude that an XFVS app fully satisfies
+          a security property, for example, all data are ensured to be
+          consistent, it will obtain a score of 6 (★★★) on SP4. If only
+          the preliminary requirements are met, such as using silent
+          liveness detection on SP3, a minimum score of 1 (☆) is
+          assigned. In other cases, an intermediate score is given based
+          on how well the XFVS app meets the security property.</p> -->
+
+
+          <h2>Overall Result</h2>
+        
+        <img src="pictures/distribution2.png" width="60%" /> 
+          <p>We cluster the XFVS code according
+              to the prefixes of their package names and then identify
+              XFVS SDKs. The above form lists the top 10 SDKs in the Xiaomi
+              App Market and the top 4 SDKs in Google Play, as well
+              as the number of apps that have integrated these SDKs for
+              face verification. These SDKs are from well-known software
+              developers, and they are
+              widely used by a large number of users.</p>
+        <!-- <img src="pictures/overall result.png" width="100%" /> -->
+        <p>We apply our testing framework to evaluate the security of
+          top SDKs. We analyzed over 80 apps in total with
+          at least three apps per SDK, and <strong>all the analyzed apps</strong> are
+          vulnerable to at least one attack.
+        </p>
+        <h2>Vulnerability Report</h2>
+        
+        <img src="pictures/cnvd.png" width="50%" />
+        <p>We receive 14 CNVD IDs, as listed in table above. Note
+          these CNVDs are confidential for 10 years.</p>
+
+        <h2>Mitigation</h2>
+        <p>Based on our security analysis and the lessons learned,
+          possible mitigation to the above XFVS attacks is discussed
+          below.
+        </p>
+        <ul>
+          <li>
+            <p><strong>Satisfying all security properties.</strong>The fundamental solution is to ensure that all security properties (SP1 to SP4)
+              are well satisfied. For example, processes of XFVSes and the cameras
+              should be placed in a trusted environment.</p>
+          </li>
+          <li>
+            <p><strong> Using PKI with Local FVSes.</strong> A potential alternative to
+              XFVSes is using PKI-based Local FVS, such as the FIDO2
+              protocol.
+              </p>
+          </li>
+          <li>
+            <p><strong>Enhancing XFVSes.</strong>  Although it is hard to fully satisfy
+              all security properties, some methods can be adopted to
+              enhance current XFVSes. The XFVS apps can use more
+              robust environment-checking tools, increase the randomness of
+              liveness detection patterns, and add more checks to ensure data
+              consistency.  </p>
+          </li>
+          <li>
+            <p><strong>Protecting XFVSes.</strong> Another idea is to protect XFVSes
+              by filtering out abnormal requests. To do so, the app server
+              can use device fingerprinting methods to only allow users to
+              use XFVS on a few trusted devices, and also it can check
+              the IP address of the request and the behavior history of the
+              users.</p>
+          </li>
+        
+        </ul>
+
+        
+       
+
+ 
+
+
+
+
+
+      </div>
+     </div> 
+    </div> 
+
+
+
+
+    
+    <div class="publications" v-if="page == 'Publications'"> 
+     <div class="cv"> 
+      <h2>Publications</h2> 
+      <p>Xiaohan Zhang, Haoqi Ye, Ziqi Huang, Xiao Ye, Yinzhi Cao, Yuan Zhang, Min Yang.</p> 
+      <p>"Understanding the (In)Security of Cross-side Face Verification Systems in Mobile Apps: A System Perspective" 44th IEEE Symposium on
+        Security and Privacy (IEEE S&P 2023). </p> 
+      
+      <!-- <p> If you find our paper interesting, you can reference our paper using the following Bibtex: </p>
+      <pre class="highlight"><code>@inproceedings{zhang2020enhancing,
+        title={Enhancing State-of-the-art Classifiers with API Semantics to Detect Evolved Android Malware},
+        author={Zhang, Xiaohan and Zhang, Yuan and Zhong, Ming and Ding, Daizong and Cao, Yinzhi and Zhang, Yukun and Zhang, Mi and Yang, Min},
+        booktitle={Proceedings of the 2020 ACM SIGSAC Conference on Computer and Communications Security},
+        pages={757--770},
+        year={2020}
+      }</code></pre>  -->
+      <p></p> 
+     </div> 
+    </div> 
+   </div> 
+   <footer id="te-footer"> 
+    <div>
+      <a href="#" style="color: white;">XFVS Security</a> 
+    </div> 
+   </footer> 
+  </div> 
+  <script>
+    var app = new Vue({
+        el:"#app",
+        data:{
+            page:"Home"
+        }
+    })
+</script> 
+ </body>
+</html>
